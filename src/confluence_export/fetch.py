@@ -32,7 +32,15 @@ def fetch_page_storage(cfg: Config) -> str:
     verify = cfg.ca_cert if cfg.ca_cert else True
     resp = _request_with_retry(url, headers, verify=verify)
 
-    data = resp.json()
+    try:
+        data = resp.json()
+    except requests.exceptions.JSONDecodeError:
+        snippet = resp.text[:500]
+        raise SystemExit(
+            f"Error: Confluence returned non-JSON response (HTTP {resp.status_code}).\n"
+            f"Response body (first 500 chars):\n{snippet}"
+        )
+
     if cfg.api_mode == "v2":
         return data["body"]["storage"]["value"]
     else:
