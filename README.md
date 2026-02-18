@@ -58,6 +58,7 @@ confluence_export \
   --out PATH           Output markdown file path
   --token-env VAR      Env var name for the API token (default: CONFLUENCE_TOKEN)
   --api-mode {v1,v2}   API mode (default: v2)
+  --ca-cert PATH       Path to CA certificate PEM file for SSL verification
   --config FILE        Optional YAML config file
 ```
 
@@ -78,6 +79,25 @@ confluence_export --config config.yaml --page-id 123456789 --out output/page.md
 ```
 
 CLI arguments override values from the config file.
+
+### Custom CA certificate
+
+If your Confluence instance uses a self-signed certificate or a certificate signed by an internal CA, provide the CA certificate PEM file:
+
+```bash
+confluence_export \
+  --base-url https://confluence.example.com \
+  --page-id 123456789 \
+  --ca-cert /path/to/ca-bundle.pem \
+  --out output/page.md
+```
+
+This can also be set in the config file:
+
+```yaml
+base_url: https://confluence.example.com
+ca_cert: /path/to/ca-bundle.pem
+```
 
 ### Using the v1 API
 

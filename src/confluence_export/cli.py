@@ -19,6 +19,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out", help="Output markdown file path")
     p.add_argument("--token-env", dest="token_env", default=None, help="Env var name for the API token (default: CONFLUENCE_TOKEN)")
     p.add_argument("--api-mode", dest="api_mode", choices=["v1", "v2"], default=None, help="API mode: v1 or v2 (default: v2)")
+    p.add_argument("--ca-cert", dest="ca_cert", default=None, help="Path to CA certificate PEM file for SSL verification")
     p.add_argument("--config", dest="config_file", default=None, help="Optional YAML config file")
     return p
 
@@ -38,6 +39,7 @@ def main(argv: list[str] | None = None) -> None:
         "out": args.out,
         "token_env": args.token_env,
         "api_mode": args.api_mode,
+        "ca_cert": args.ca_cert,
     }
     cfg = merge_cli_into_config(cfg, cli_vals)
 

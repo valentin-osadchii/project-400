@@ -29,7 +29,8 @@ def fetch_page_storage(cfg: Config) -> str:
     else:
         url = f"{cfg.base_url.rstrip('/')}/rest/api/content/{cfg.page_id}?expand=body.storage"
 
-    resp = _request_with_retry(url, headers)
+    verify = cfg.ca_cert if cfg.ca_cert else True
+    resp = _request_with_retry(url, headers, verify=verify)
 
     data = resp.json()
     if cfg.api_mode == "v2":
@@ -38,10 +39,10 @@ def fetch_page_storage(cfg: Config) -> str:
         return data["body"]["storage"]["value"]
 
 
-def _request_with_retry(url: str, headers: dict) -> requests.Response:
+def _request_with_retry(url: str, headers: dict, *, verify=True) -> requests.Response:
     """GET with exponential backoff on 429 and 5xx."""
     for attempt in range(_MAX_RETRIES + 1):
-        resp = requests.get(url, headers=headers, timeout=30)
+        resp = requests.get(url, headers=headers, timeout=30, verify=verify)
 
         if resp.status_code == 401:
             raise SystemExit("Error: 401 Unauthorized — check your API token.")

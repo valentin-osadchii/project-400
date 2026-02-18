@@ -16,6 +16,7 @@ class Config:
     out: str = ""
     token_env: str = "CONFLUENCE_TOKEN"
     api_mode: str = "v2"
+    ca_cert: str = ""
 
     def token(self) -> str:
         val = os.environ.get(self.token_env, "")
